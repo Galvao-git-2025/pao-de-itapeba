@@ -1,0 +1,25 @@
+﻿# Ambiente virtual
+.venv/
+venv/
+
+# Arquivos Python temporarios
+__pycache__/
+*.py[cod]
+
+# Variaveis e segredos
+.env
+.env.*
+!.env.example
+
+# Testes
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Banco de dados local
+instance/
+*.db
+
+# Configuracoes locais
+.vscode/
+.DS_Store
