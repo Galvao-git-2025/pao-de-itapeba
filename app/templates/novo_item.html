@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastrar item | Pão de Itapeba</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+    <style>
+        .cadastro-container {
+            max-width: 650px;
+            margin: 40px auto;
+            padding: 30px;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 3px 15px rgba(0,0,0,.08);
+        }
+
+        .campo {
+            margin-bottom: 20px;
+        }
+
+        .campo label {
+            display: block;
+            margin-bottom: 7px;
+            font-weight: 600;
+        }
+
+        .campo input,
+        .campo select {
+            width: 100%;
+            padding: 11px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            box-sizing: border-box;
+        }
+
+        .erro {
+            color: #b42318;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        .mensagem {
+            padding: 12px;
+            margin-bottom: 15px;
+            border-radius: 6px;
+        }
+
+        .success {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .danger {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .botoes {
+            display: flex;
+            gap: 12px;
+            margin-top: 25px;
+        }
+
+        .botao {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 15px;
+        }
+
+        .botao-principal {
+            background: #176b45;
+            color: white;
+        }
+
+        .botao-secundario {
+            background: #e5e7eb;
+            color: #333;
+        }
+
+        @media (max-width: 600px) {
+            .cadastro-container {
+                margin: 15px;
+                padding: 20px;
+            }
+
+            .botoes {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <main class="cadastro-container">
+
+        <h1>Cadastrar item</h1>
+
+        <p>
+            Cadastre os produtos vendidos pela padaria
+            e os ingredientes utilizados na produção.
+        </p>
+
+        {% with mensagens = get_flashed_messages(with_categories=true) %}
+            {% for categoria, mensagem in mensagens %}
+                <div class="mensagem {{ categoria }}">
+                    {{ mensagem }}
+                </div>
+            {% endfor %}
+        {% endwith %}
+
+        <form method="POST">
+
+            {{ form.hidden_tag() }}
+
+            <div class="campo">
+                {{ form.nome.label }}
+                {{ form.nome(placeholder="Ex.: Esfirra de carne", autocomplete="off") }}
+
+                {% for erro in form.nome.errors %}
+                    <div class="erro">{{ erro }}</div>
+                {% endfor %}
+            </div>
+
+            <div class="campo">
+                {{ form.tipo_item.label }}
+                {{ form.tipo_item(id="tipo_item") }}
+
+                {% for erro in form.tipo_item.errors %}
+                    <div class="erro">{{ erro }}</div>
+                {% endfor %}
+            </div>
+
+            <div class="campo">
+                {{ form.unidade_medida.label }}
+                {{ form.unidade_medida(placeholder="Ex.: unidade, kg, litro") }}
+
+                {% for erro in form.unidade_medida.errors %}
+                    <div class="erro">{{ erro }}</div>
+                {% endfor %}
+            </div>
+
+            <div class="campo">
+                {{ form.estoque_minimo.label }}
+                {{ form.estoque_minimo(placeholder="Ex.: 10.000", step="0.001", min="0") }}
+
+                {% for erro in form.estoque_minimo.errors %}
+                    <div class="erro">{{ erro }}</div>
+                {% endfor %}
+            </div>
+
+            <div class="campo" id="preco-container">
+                {{ form.preco_venda.label }}
+                {{ form.preco_venda(placeholder="Ex.: 7.50", step="0.01", min="0.01") }}
+
+                {% for erro in form.preco_venda.errors %}
+                    <div class="erro">{{ erro }}</div>
+                {% endfor %}
+            </div>
+
+            <div class="botoes">
+                {{ form.submit(class_="botao botao-principal") }}
+
+                <a href="{{ url_for('main.index') }}"
+                   class="botao botao-secundario">
+                    Voltar
+                </a>
+            </div>
+
+        </form>
+
+    </main>
+
+    <script>
+        const tipoItem = document.getElementById("tipo_item");
+        const precoContainer = document.getElementById("preco-container");
+        const precoInput = document.getElementById("preco_venda");
+
+        function atualizarCampoPreco() {
+            const ehProduto = tipoItem.value === "produto";
+
+            precoContainer.hidden = !ehProduto;
+
+            if (!ehProduto) {
+                precoInput.value = "";
+            }
+        }
+
+        tipoItem.addEventListener("change", atualizarCampoPreco);
+        atualizarCampoPreco();
+    </script>
+
+</body>
+</html>
